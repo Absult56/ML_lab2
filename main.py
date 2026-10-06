@@ -235,3 +235,34 @@ plt.ylabel("Признак 2 (Scaled)")
 plt.legend()
 plt.grid(True, linestyle=':', alpha=0.6)
 plt.show()
+
+# =====================================================================
+# ШАГ 5: Сравнение с эталоном (Задание 2.5)
+# =====================================================================
+from sklearn.metrics import adjusted_rand_score, normalized_mutual_info_score
+
+# Обучаем лучший алгоритм (GMM)
+gmm = GaussianMixture(n_components=3, random_state=42)
+y_gmm = gmm.fit(X_c_scaled).predict(X_c_scaled)
+
+ari = adjusted_rand_score(y_clust, y_gmm)
+nmi = normalized_mutual_info_score(y_clust, y_gmm)
+print(f"GMM vs Ground Truth: ARI = {ari:.4f}, NMI = {nmi:.4f}")
+
+# График сравнения
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+axes[0].scatter(X_c_scaled[:, 0], X_c_scaled[:, 1], c=y_clust, cmap='Set1', s=35, edgecolors='k', alpha=0.8)
+axes[0].set_title("Эталонная разметка (столбец y)")
+axes[0].set_xlabel("Признак 1 (Scaled)")
+axes[0].set_ylabel("Признак 2 (Scaled)")
+axes[0].grid(True, linestyle=':', alpha=0.6)
+
+axes[1].scatter(X_c_scaled[:, 0], X_c_scaled[:, 1], c=y_gmm, cmap='Set1', s=35, edgecolors='k', alpha=0.8)
+axes[1].set_title(f"Результат Gaussian Mixture (ARI = {ari:.2f})")
+axes[1].set_xlabel("Признак 1 (Scaled)")
+axes[1].set_ylabel("Признак 2 (Scaled)")
+axes[1].grid(True, linestyle=':', alpha=0.6)
+
+plt.tight_layout()
+plt.show()
